@@ -1,0 +1,25 @@
+name: Deploy Backend - Render via Tag
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Log de Deploy
+        run: |
+          echo "Backend: Deploy iniciado para ${GITHUB_REF_NAME}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Timestamp: $(date)"
+
+      - name: Trigger Render Deploy
+        run: |
+          curl -X POST "https://api.render.com/v1/services/${{ secrets.SERVICE_ID }}/deploys" \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
