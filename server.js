@@ -10,7 +10,7 @@ app.use(express.json());
 // CORS
 const corsOptions = {
   origin: [
-    "https://meubolso-frontend.vercel.app/",
+    "https://meubolso-frontend.vercel.app",
     "https://humble-eureka-jj5x579qr457fpwv6-8080.app.github.dev/"
   ],
   methods: "GET,POST,PUT,DELETE",
