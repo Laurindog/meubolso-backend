@@ -7,9 +7,12 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json());
 
-// CORS configurado para aceitar frontend da Vercel
+// CORS
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || "*",
+  origin: [
+    "https://meubolso-frontend.vercel.app/",
+    "https://humble-eureka-jj5x579qr457fpwv6-8080.app.github.dev/"
+  ],
   methods: "GET,POST,PUT,DELETE",
   allowedHeaders: "Content-Type,Authorization"
 };
@@ -34,6 +37,23 @@ let gastos = [
   }
 ];
 
+// ROTA BASE
+app.get("/", (req, res) => {
+  res.json({
+    status: "Backend MeuBolso rodando 🚀",
+    versao: "1.1.0",
+    cors_ativo: true
+  });
+});
+
+// ROTA V1
+app.get("/v1", (req, res) => {
+  res.json({
+    message: "Api v1 respondendo no container docker...",
+    chamada_em: new Date().toLocaleString("pt-BR")
+  });
+});
+
 // GET: listar gastos
 app.get("/gastos", (req, res) => {
   res.json({
@@ -45,6 +65,7 @@ app.get("/gastos", (req, res) => {
 
 // GET: gasto por ID
 app.get("/gastos/:id", (req, res) => {
+
   const gasto = gastos.find(g => g.id == req.params.id);
 
   if (!gasto) {
@@ -58,6 +79,7 @@ app.get("/gastos/:id", (req, res) => {
 
 // POST: criar gasto
 app.post("/gastos", (req, res) => {
+
   const { descricao, valor, categoria } = req.body;
 
   if (!descricao || !valor) {
@@ -87,6 +109,7 @@ app.post("/gastos", (req, res) => {
 
 // DELETE: remover gasto
 app.delete("/gastos/:id", (req, res) => {
+
   const id = Number(req.params.id);
 
   gastos = gastos.filter(g => g.id !== id);
@@ -96,16 +119,6 @@ app.delete("/gastos/:id", (req, res) => {
   });
 });
 
-// Health check
-app.get("/", (req, res) => {
-  res.json({
-    status: "Backend MeuBolso rodando",
-    versao: "1.0.0",
-    cors_ativo: true
-  });
-});
-
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`CORS habilitado para: ${corsOptions.origin}`);
 });
